@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آموزش دستور Git Revert</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2980b9;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --code-bg: #1e1e1e;
+            --code-text: #39ff14;
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-size: 20px;
+            margin-top: 25px;
+        }
+
+        p {
+            font-size: 16px;
+            text-align: justify;
+        }
+
+        ul {
+            padding-right: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .important {
+            font-weight: bold;
+            color: #c0392b;
+        }
+
+        /* استایل بخش کدهای گیت */
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 5px;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #d63384;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            display: block;
+        }
+
+        .example-box {
+            background-color: #e8f4f8;
+            border-right: 5px solid var(--secondary-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>دستور Git Revert چیست؟</h1>
+    <p>دستور <code>git revert</code> برای <strong>لغو کردن تغییرات</strong> یک کات (Commit) مشخص استفاده می‌شود. ویژگی اصلی این دستور این است که تاریخچه (History) گیت را پاک نمی‌کند، بلکه یک کات جدید ایجاد می‌کند که دقیقاً عکس کات قبلی است. این کار برای پروژه‌های تیمی بسیار ایمن است.</p>
+
+    <h2>چرا از Git Revert استفاده کنیم؟</h2>
+    <ul>
+        <li><span class="important">امنیت بالا:</span> تاریخچه کات‌ها حذف نمی‌شود و دیگر اعضای تیم دچار مشکل نمی‌شوند.</li>
+        <li><span class="important">مناسب برای کات‌های عمومی:</span> اگر کات شما روی سرور (مثل GitHub) فرستاده شده باشد، این بهترین روش است.</li>
+        <li><span class="important">مستندسازی:</span> در تاریخچه مشخص می‌ماند که چه تغییری و چرا لغو شده است.</li>
+    </ul>
+
+    <h2>طریقه استفاده (Syntax)</h2>
+    <p>برای لغو یک کات، ابتدا باید شناسنامه یا همان شناسه (Hash ID) کات مورد نظر را پیدا کنید و سپس دستور زیر را اجرا کنید:</p>
+    <pre><code>git revert [commit_id]</code></pre>
+
+    <h2>مثال عملی گام به گام</h2>
+    <div class="example-box">
+        <p><strong>سناریو:</strong> فرض کنید شما کاتی انجام داده‌اید که باعث بروز خطا در برنامه شده است.</p>
+        
+        <p>۱. ابتدا با دستور زیر لست کات‌های اخیر را می‌بینید:</p>
+        <pre><code>git log --oneline</code></pre>
+        
+        <p>خروجی به این شکل خواهد بود:</p>
+        <pre><code>a1b2c3d (HEAD -> main) اضافه کردن منوی جدید
+e5f6g7h تغییر رنگ پس‌زمینه
+9j8k7l6 ساختن صفحه تماس با ما</code></pre>
+
+        <p>۲. حالا می‌خواهید تغییرات کات مربوط به منوی جدید یعنی <code>a1b2c3d</code> را لغو کنید:</p>
+        <pre><code>git revert a1b2c3d</code></pre>
+
+        <p>۳. بعد از اجرای این دستور، گیت یک ادیتور متن باز می‌کند تا پیام کات جدید را تایید کنید. بعد از ذخیره، کات جدیدی ساخته می‌شود که منو را حذف می‌کند بدون اینکه کات قبلی از تاریخچه پاک شود.</p>
+    </div>
+
+    <h2>تفاوت اصلی Git Revert و Git Reset</h2>
+    <ul>
+        <li><strong>Git Revert:</strong> تغییرات را لغو کرده و یک کات جدید می‌سازد (تاریخچه حفظ می‌شود).</li>
+        <li><strong>Git Reset:</strong> کات‌ها را کاملاً از تاریخچه پاک می‌کند (برای کات‌های عمومی خطرناک است).</li>
+    </ul>
+</div>
+
+</body>
+</html>
